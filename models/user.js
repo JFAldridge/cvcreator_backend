@@ -1,11 +1,57 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+
 const bcrypt = require('bcryptjs');
 const SALT_WORK_FACTOR = 5;
 
+// Subdocuments
+const ContactSchema = new Schema({
+    phone: {type: String},
+    email: {type: String},
+    portfolio: {type: String},
+    github: {type: String},
+    linkedIn: {type: String},
+    instagram: {type: String},
+    youtube: {type: String},
+    facebook: {type: String}
+});
+
+const EducationSchema = new Schema({
+    degree: {type: String},
+    institution: {type: String},
+    timeToDegree: {type: String}
+});
+
+const SkillsSchema = new Schema({
+    skillType: {type: String},
+    skillList: []
+});
+
+const IntroductionSchema = new Schema({
+    givenName: {type: String},
+    surName: {type: String},
+    title: {type: String},
+    about: {type: String}
+});
+
+const WorkExperienceSchema = new Schema({
+    company: {type: String},
+    position: {type: String},
+    duration: {type: String},
+    summary: {type: String},
+    achievements: []
+});
+
 const UserSchema = new Schema({
-    email: {type: String, required: true, maxlength: 256},
-    password: {type: String, required: true, maxlength: 128, minLength: 8}
+    email: {type: String, unique: true, required: true, maxlength: 256},
+    password: {type: String, required: true, maxlength: 128, minLength: 8},
+    userInfo: {
+        contact: ContactSchema,
+        education: [EducationSchema],
+        skills: [SkillsSchema],
+        introduction: IntroductionSchema,
+        workExperience: [WorkExperienceSchema]
+    }
 });
 
 UserSchema.pre('save', function(next) {
@@ -36,3 +82,72 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
 };
 
 module.exports = mongoose.model('User', UserSchema);
+
+/*  
+{
+    email: {type: String, unique: true, required: true, maxlength: 256},
+    password: {type: String, required: true, maxlength: 128, minLength: 8},
+    contact: {
+        phone: '515-515-5151',
+        email: 'he-man@ilikefigs.com',
+        portfolio: 'he-man.dev',
+        linkedIn: 'type: linkedin.com/he-man'
+    },
+    education: [
+        {
+        degree: 'Bachlors in Revelry',
+        institution: 'U of life',
+        timeToDegree: '2010 - 2016'
+        }, 
+        {
+        degree: 'Masters of the University',
+        institution: 'Eternia State',
+        timeToDegree: '2018 - 2020'
+        }
+    ],
+    skills: [{
+        skillType: 'Heroisms',
+        skillList: [
+            'Kicking skulls',
+            'Saving people',
+            'Nice abs',
+            'Shouting a lot',
+            'Team player',
+            'Cool sword',
+            'Pecs for days'
+        ]
+    }],
+    introduction: {
+        givenName: 'He-Man',
+        surName: 'Prince Adam',
+        title: 'Master of the Universe',
+        about: 'He-Man is a superhero and the main character of the sword and sorcery Masters of the Universe franchise, which includes a toy line, several animated television series, comic books and a feature film. He-Man is characterized by his superhuman strength and in most variations, is the alter ego of Prince Adam.'
+    },
+    workExperience: [
+        {
+            company: 'The Universe',
+            position: 'Master',
+            duration: 'Eternity',
+            summary: 'Basically god, but only with half a sword instead of an entire one.',
+            achievements: [
+                'All the things',
+                'Found more gold',
+                'Made all things happy',
+                'Loved cat'
+            ]
+        },
+        {
+            company: 'Eternia Royal Family',
+            position: 'Prince',
+            duration: '1985 - Current',
+            summary: 'Ruler of entire planet.  Very cool.',
+            achievements: [
+                'Dispursed gold',
+                'Made subjects happy',
+                'Got a cat'
+            ]
+        }
+        
+    ]
+}
+*/

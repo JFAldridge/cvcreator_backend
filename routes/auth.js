@@ -7,7 +7,7 @@ const User = require('../models/user');
 router.post('/login', function(req, res, next) {
 
     passport.authenticate('local', {session: false}, (err, user, info) => {
-        
+
         if (err || !user) {
             return res.status(400).json({
                 message: err,
@@ -21,21 +21,20 @@ router.post('/login', function(req, res, next) {
             }
 
             const token = jwt.sign(user.toJSON(), process.env.JWT_SECRET);
-            return res.json({token});
+            console.log(req.user.userInfo)
+            return res.json({
+                token,
+                userInfo: req.user.userInfo
+            });
         });
     })(req,res,next);
 });
 
 router.post('/register', function(req, res, next) {
-    const email = req.body.email;
-    const password = req.body.password;
-    const user = new User({
-        email,
-        password
-    });
+    const user = new User(req.body);
     user.save(function(err, user) {
         if (err) return next(err);
-        res.json(user);
+        res.json({message: "Registration Successful"});
     }); 
 });
 
