@@ -21,8 +21,8 @@ router.post('/login', function(req, res, next) {
             }
 
             const token = jwt.sign(user.toJSON(), process.env.JWT_SECRET);
-            console.log(req.user.userInfo)
-            return res.json({
+
+            return res.status(200).json({
                 token,
                 userInfo: req.user.userInfo
             });
@@ -32,10 +32,27 @@ router.post('/login', function(req, res, next) {
 
 router.post('/register', function(req, res, next) {
     const user = new User(req.body);
-    user.save(function(err, user) {
-        if (err) return next(err);
-        res.json({message: "Registration Successful"});
-    }); 
+    user.save()
+        .then(function(user) {
+            console.log('saved')
+            res.status(201).json({
+                message: 'Account created'
+            });
+        })
+        .catch(function(err) {
+            if (err.name === 'ValidationError') {
+                let errMessages = {};
+
+                Object.entries(err.errors).forEach(([errKey, errObj]) => {
+                    errMessages[errKey] = errObj.message;
+                });
+                console.log(errMessages);
+                return res.status(400).json({
+                    errMessages
+                });
+            }
+            res.status(500).send(err);
+        });
 });
 
 module.exports = router;

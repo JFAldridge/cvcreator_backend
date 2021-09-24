@@ -24,12 +24,12 @@ const EducationSchema = new Schema({
 
 const SkillsSchema = new Schema({
     skillType: {type: String},
-    skillList: []
+    skill: []
 });
 
 const IntroductionSchema = new Schema({
     givenName: {type: String},
-    surName: {type: String},
+    surname: {type: String},
     title: {type: String},
     about: {type: String}
 });
@@ -39,12 +39,28 @@ const WorkExperienceSchema = new Schema({
     position: {type: String},
     duration: {type: String},
     summary: {type: String},
-    achievements: []
+    achievement: []
 });
 
 const UserSchema = new Schema({
-    email: {type: String, unique: true, required: true, maxlength: 256},
-    password: {type: String, required: true, maxlength: 128, minLength: 8},
+    email: {
+        type: String, 
+        required: [true, 'An email must be provided'], 
+        maxlength: [256, 'Email has too many characters'],
+        match: [/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/, 'Invalid email format'],
+        validate: {
+            validator: function(v){
+                return this.model('User').findOne({ email: v }).then(user => !user)
+            },
+            message: props => `${props.value} is already being used`
+        },
+    },
+    password: {
+        type: String, 
+        required: [true, 'A password must be provided'], 
+        maxlength: [128, 'Password must has less than 128 characters'], 
+        minLength: [7, 'Password must have at least 7 characters']
+    },
     userInfo: {
         contact: ContactSchema,
         education: [EducationSchema],
