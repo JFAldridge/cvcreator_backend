@@ -4,6 +4,7 @@
   "description": "Backend for CVCreator",
   "main": "app.js",
   "scripts": {
+    "start": "app.js",
     "dev-start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,5 +25,8 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.12"
+  },
+  "engines": {
+    "node": "14.17.3"
   }
 }
