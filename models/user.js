@@ -47,7 +47,7 @@ const UserSchema = new Schema({
         type: String, 
         required: [true, 'An email must be provided'], 
         maxlength: [256, 'Email has too many characters'],
-        match: [/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/, 'Invalid email format']
+        match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Invalid email format']
     },
     password: {
         type: String, 

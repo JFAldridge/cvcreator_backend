@@ -4,7 +4,7 @@ const router = express.Router();
 router.put('/userinfo', function(req, res, next) {
 
     req.user.userInfo = req.body.userInfo;
-  
+
     req.user.save(function(err, user) {
         if (err) return next(err);
         res.json({message: 'Changes saved'});
