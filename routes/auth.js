@@ -31,6 +31,15 @@ router.post('/login', function(req, res, next) {
 });
 
 router.post('/register', function(req, res, next) {
+    const email = req.body.email;
+    User.findOne({email}, function(err, user) {
+        if (err) {
+            return res.status(400).json({
+                errMessages: {taken: 'That email has already been taken'}
+            });
+        }
+    });
+
     const user = new User(req.body);
     user.save()
         .then(function(user) {

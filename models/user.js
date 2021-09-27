@@ -47,13 +47,7 @@ const UserSchema = new Schema({
         type: String, 
         required: [true, 'An email must be provided'], 
         maxlength: [256, 'Email has too many characters'],
-        match: [/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/, 'Invalid email format'],
-        validate: {
-            validator: function(v){
-                return this.model('User').findOne({ email: v }).then(user => !user)
-            },
-            message: props => `${props.value} is already being used`
-        },
+        match: [/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/, 'Invalid email format']
     },
     password: {
         type: String, 
